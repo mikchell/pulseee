@@ -1,4 +1,17 @@
-# pulseee
+# Pulseee(従業員パルスサーベイシステム)
+
+## 画面モック
+①ログイン画面
+<img width="1879" height="930" alt="image" src="https://github.com/user-attachments/assets/d3f017f9-336e-4219-9028-e81a380e5b98" />
+
+②-1 アンケート回答画面（アンケート回答前）
+<img width="1894" height="931" alt="image" src="https://github.com/user-attachments/assets/2dde5b4e-1cb4-4447-b29f-93b99641b55d" />
+
+②-2 アンケート回答画面（アンケート回答済み）
+<img width="1687" height="1005" alt="LINE_P202667_222155_new" src="https://github.com/user-attachments/assets/dbeb9e22-8ab4-406c-a825-64fafcb5c827" />
+
+③アンケート画面（一部のみ表示）
+<img width="1580" height="317" alt="image" src="https://github.com/user-attachments/assets/86f56f08-5f66-4613-b235-7135c9996e32" />
 
 ## Google認証の設定
 
