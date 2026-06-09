@@ -11,12 +11,13 @@ class SurveyResultCsvExporter
     csv_body = CSV.generate(headers: true) do |csv|
       csv << headers
 
-      anonymous_responses.each do |(_, answers)|
+      anonymous_responses.each do |(submit_token, answers)|
         answer_by_question_id = answers.index_by(&:survey_question_id)
 
         csv << [
           survey.id,
           survey.title,
+          snapshots_by_token[submit_token]&.group_name,
           *questions.map { |question| answer_by_question_id[question.id]&.score }
         ]
       end
@@ -33,6 +34,7 @@ class SurveyResultCsvExporter
     [
       "サーベイID",
       "サーベイ名",
+      "グループ",
       *questions.map { |question| "Q#{question.order_index}" }
     ]
   end
@@ -47,5 +49,11 @@ class SurveyResultCsvExporter
       .includes(:survey_question)
       .group_by(&:submit_token)
       .sort_by { |submit_token, _| submit_token }
+  end
+
+  def snapshots_by_token
+    @snapshots_by_token ||= AnswerGroupSnapshot
+      .where(submit_token: anonymous_responses.map(&:first))
+      .index_by(&:submit_token)
   end
 end

@@ -31,7 +31,7 @@ class SurveyResultCsvExportTest < ActionDispatch::IntegrationTest
     score_rows = csv.map { |row| [ row["Q1"], row["Q2"], row["Q3"], row["Q4"], row["Q5"] ] }.sort
 
     assert_equal 3, csv.size
-    assert_equal [ "サーベイID", "サーベイ名", "Q1", "Q2", "Q3", "Q4", "Q5" ], csv.headers
+    assert_equal [ "サーベイID", "サーベイ名", "グループ", "Q1", "Q2", "Q3", "Q4", "Q5" ], csv.headers
     assert_not_includes csv.headers, "submit_token"
     assert_not_includes csv.headers, "ユーザーID"
     assert_not_includes csv.headers, "匿名回答ID"
@@ -60,6 +60,25 @@ class SurveyResultCsvExportTest < ActionDispatch::IntegrationTest
     get "/admin/survey/#{survey.id}/download_survey_results"
     assert_response :success
     assert_equal "text/csv", response.media_type
+  end
+
+  test "csv includes group name snapshot at time of submission" do
+    group = Group.create!(name: "開発")
+    Question::STANDARD_BODIES.each { |body| Question.create!(body: body) }
+    user = User.create!(name: "開発者", email: "csv-dev@example.com", survey_subject: true, group: group)
+    survey = Survey.create!(title: "グループテスト", status: :active, start_at: 1.hour.ago, end_at: 1.hour.from_now)
+    assignment = survey.survey_assignments.find_by!(user: user)
+    answers = survey.survey_questions.index_with { 3 }.transform_keys(&:id)
+    assignment.submit_scores!(answers)
+
+    # グループ変更後も過去の回答は元のグループ名を保持する
+    user.update!(group: nil)
+
+    login_as(@admin)
+    get admin_survey_results_path(survey, format: :csv)
+
+    csv = CSV.parse(response.body.delete_prefix(SurveyResultCsvExporter::UTF_8_BOM), headers: true)
+    assert_equal "開発", csv.first["グループ"]
   end
 
   test "survey result csv export requires system admin" do

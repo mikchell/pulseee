@@ -22,6 +22,29 @@ class SurveyAssignmentTest < ActiveSupport::TestCase
     assert_not_includes ScoreAnswer.column_names, "updated_at"
   end
 
+  test "creates group snapshot on submit" do
+    group = Group.create!(name: "開発")
+    @user.update!(group: group)
+
+    assert_difference -> { AnswerGroupSnapshot.count }, 1 do
+      assert @assignment.submit_scores!(answers_for(4))
+    end
+
+    token = ScoreAnswer.last.submit_token
+    snapshot = AnswerGroupSnapshot.find_by!(submit_token: token)
+    assert_equal "開発", snapshot.group_name
+  end
+
+  test "creates group snapshot with nil group name when user has no group" do
+    assert_difference -> { AnswerGroupSnapshot.count }, 1 do
+      assert @assignment.submit_scores!(answers_for(3))
+    end
+
+    token = ScoreAnswer.last.submit_token
+    snapshot = AnswerGroupSnapshot.find_by!(submit_token: token)
+    assert_nil snapshot.group_name
+  end
+
   test "does not save partial answers" do
     answers = answers_for(3)
     answers.delete(@survey.survey_questions.first.id)

@@ -42,6 +42,10 @@ class SurveyAssignment < ApplicationRecord
           score: scores.fetch(question.id)
         )
       end
+      AnswerGroupSnapshot.create!(
+        submit_token: submit_token,
+        group_name: user.group&.name
+      )
       update!(state: :submitted, submitted_at: Time.current)
     end
 

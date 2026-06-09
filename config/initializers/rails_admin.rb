@@ -16,6 +16,7 @@ RailsAdmin.config do |config|
 
   config.included_models = [
     "User",
+    "Group",
     "Role",
     "Question",
     "Survey",
@@ -51,13 +52,25 @@ RailsAdmin.config do |config|
       field :name
       field :email
       field :survey_subject
+      field :group
       field :roles
     end
 
     edit do
       field :name
       field :survey_subject
+      field :group
       field :roles
+    end
+  end
+
+  config.model "Group" do
+    create do
+      field :name
+    end
+
+    edit do
+      field :name
     end
   end
 

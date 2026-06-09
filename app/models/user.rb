@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  belongs_to :group, optional: true
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
   has_many :survey_assignments, dependent: :restrict_with_error
