@@ -257,6 +257,65 @@ h3 {
   transform: translateY(-4px);
 }
 
+.admin-operation-shell {
+  width: min(1040px, calc(100% - 32px));
+}
+
+.admin-operation-panel {
+  display: grid;
+  gap: 28px;
+}
+
+.admin-operation-status {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.admin-operation-value {
+  margin-top: 4px;
+  color: var(--charcoal);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.admin-operation-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 4px;
+}
+
+.admin-operation-actions form {
+  flex: 0 0 auto;
+}
+
+.admin-operation-actions .button:disabled {
+  background: var(--hairline);
+  color: var(--steel);
+  cursor: not-allowed;
+}
+
+@media (max-width: 760px) {
+  .admin-operation-status {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-operation-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-operation-actions form,
+  .admin-operation-actions .button {
+    width: 100%;
+  }
+}
+
 .home-hero-shell {
   --home-green-ink: #1e2e1e;
   --home-green-text: #3d5a3d;

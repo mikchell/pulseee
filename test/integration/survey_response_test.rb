@@ -23,48 +23,50 @@ class SurveyResponseTest < ActionDispatch::IntegrationTest
   end
 
   test "pending user can answer active survey once" do
-    user = User.create!(name: "対象者", email: "subject@example.com", survey_subject: true)
-    survey = Survey.create!(
-      title: "今週のサーベイ",
-      status: :active,
-      start_at: 1.hour.ago,
-      end_at: Time.zone.local(2026, 6, 13, 13, 25)
-    )
-    assignment = survey.survey_assignments.find_by!(user: user)
+    travel_to Time.zone.local(2026, 6, 13, 12, 0) do
+      user = User.create!(name: "対象者", email: "subject@example.com", survey_subject: true)
+      survey = Survey.create!(
+        title: "今週のサーベイ",
+        status: :active,
+        start_at: 1.hour.ago,
+        end_at: Time.zone.local(2026, 6, 13, 13, 25)
+      )
+      assignment = survey.survey_assignments.find_by!(user: user)
 
-    login_as(user)
-    get root_path
-    assert_select ".home-deadline-val", text: "2026/6/13 13:25"
-    assert_select "a.home-pulse-link[href='#{new_survey_assignment_response_path(assignment)}']"
-    get new_survey_assignment_response_path(assignment)
-    assert_response :success
-    assert_select ".question-progress-item", count: 5
-    assert_select ".question-progress-item.is-answered", count: 0
-    assert_select "input.score-choice-input[type=radio]", count: 25
-    assert_select "input.score-choice-input[required]", count: 25
-    assert_select ".score-choice", text: "そうだ", count: 5
-    assert_select ".score-choice", text: "どちらとも言えない", count: 5
-    assert_select ".score-choice", text: "ちがう", count: 5
-
-    assert_difference -> { ScoreAnswer.count }, 5 do
-      post survey_assignment_response_path(assignment), params: { answers: answers_for(survey, 4) }
-    end
-    follow_redirect!
-
-    assert_select ".flash.notice", text: "回答を送信しました"
-    assert_select ".home-meta-val", text: "回答が必要なサーベイはありません"
-
-    assert_no_difference -> { ScoreAnswer.count } do
-      post survey_assignment_response_path(assignment), params: { answers: answers_for(survey, 5) }
-    end
-    follow_redirect!
-    assert_select ".flash.alert", text: "回答が必要なサーベイはありません"
-
-    assert_no_difference -> { ScoreAnswer.count } do
+      login_as(user)
+      get root_path
+      assert_select ".home-deadline-val", text: "2026/6/13 13:25"
+      assert_select "a.home-pulse-link[href='#{new_survey_assignment_response_path(assignment)}']"
       get new_survey_assignment_response_path(assignment)
+      assert_response :success
+      assert_select ".question-progress-item", count: 5
+      assert_select ".question-progress-item.is-answered", count: 0
+      assert_select "input.score-choice-input[type=radio]", count: 25
+      assert_select "input.score-choice-input[required]", count: 25
+      assert_select ".score-choice", text: "そうだ", count: 5
+      assert_select ".score-choice", text: "どちらとも言えない", count: 5
+      assert_select ".score-choice", text: "ちがう", count: 5
+
+      assert_difference -> { ScoreAnswer.count }, 5 do
+        post survey_assignment_response_path(assignment), params: { answers: answers_for(survey, 4) }
+      end
+      follow_redirect!
+
+      assert_select ".flash.notice", text: "回答を送信しました"
+      assert_select ".home-meta-val", text: "回答が必要なサーベイはありません"
+
+      assert_no_difference -> { ScoreAnswer.count } do
+        post survey_assignment_response_path(assignment), params: { answers: answers_for(survey, 5) }
+      end
+      follow_redirect!
+      assert_select ".flash.alert", text: "回答が必要なサーベイはありません"
+
+      assert_no_difference -> { ScoreAnswer.count } do
+        get new_survey_assignment_response_path(assignment)
+      end
+      follow_redirect!
+      assert_select ".flash.alert", text: "回答が必要なサーベイはありません"
     end
-    follow_redirect!
-    assert_select ".flash.alert", text: "回答が必要なサーベイはありません"
   end
 
   test "expired and out of target surveys are not shown" do

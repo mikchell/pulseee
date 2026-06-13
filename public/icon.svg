@@ -1,3 +1,5 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pulse heart icon">
+  <rect width="512" height="512" fill="#ffffff"/>
+  <path d="M74 254h94l26-27 25 58 24-93 26 117 24-76 22 45 29-24h94" fill="none" stroke="#ef0012" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M256 354 156 254c-42-42-42-110 0-152 36-36 93-41 133-13 40-28 97-23 133 13 42 42 42 110 0 152L256 354Z" fill="none" stroke="#ef0012" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

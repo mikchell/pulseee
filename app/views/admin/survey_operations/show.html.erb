@@ -1,0 +1,64 @@
+<% content_for(:title, "サーベイ運用") %>
+
+<main class="app-shell admin-operation-shell">
+  <% if flash[:notice].present? %>
+    <div class="flash notice"><%= flash[:notice] %></div>
+  <% end %>
+  <% if flash[:alert].present? %>
+    <div class="flash alert"><%= flash[:alert] %></div>
+  <% end %>
+
+  <div class="top-bar">
+    <div>
+      <p class="eyebrow">Admin operation</p>
+      <h1>サーベイ運用</h1>
+    </div>
+    <div class="top-actions">
+      <%= link_to "Rails Admin", rails_admin_path, class: "button button-secondary" %>
+    </div>
+  </div>
+
+  <section class="work-panel admin-operation-panel">
+    <div class="admin-operation-status">
+      <div>
+        <p class="muted">今週分サーベイ</p>
+        <p class="admin-operation-value"><%= @current_week_survey&.title || "未作成" %></p>
+      </div>
+      <div>
+        <p class="muted">通知対象</p>
+        <p class="admin-operation-value"><%= @current_active_survey&.title || "有効なサーベイなし" %></p>
+      </div>
+      <div>
+        <p class="muted">未回答者</p>
+        <p class="admin-operation-value"><%= @unanswered_count %>名</p>
+      </div>
+      <div>
+        <p class="muted">Slack設定</p>
+        <p class="admin-operation-value"><%= @slack_configured ? "設定済み" : "未設定" %></p>
+      </div>
+    </div>
+
+    <div class="admin-operation-actions">
+      <div>
+        <h2>今週分を作成</h2>
+        <p class="muted">今週のサーベイを作成し、有効化します。すでにある場合は二重作成しません。</p>
+      </div>
+      <%= button_to "サーベイ作成ジョブを登録",
+                    create_current_week_survey_admin_survey_operation_path,
+                    method: :post,
+                    class: "button button-primary" %>
+    </div>
+
+    <div class="admin-operation-actions">
+      <div>
+        <h2>未回答者を通知</h2>
+        <p class="muted">現在有効なサーベイの未回答者一覧をSlackチャンネルへ投稿します。</p>
+      </div>
+      <%= button_to "Slack通知ジョブを登録",
+                    notify_unanswered_users_admin_survey_operation_path,
+                    method: :post,
+                    class: "button button-primary",
+                    disabled: @current_active_survey.blank? || !@slack_configured %>
+    </div>
+  </section>
+</main>

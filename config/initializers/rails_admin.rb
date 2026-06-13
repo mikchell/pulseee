@@ -51,6 +51,7 @@ RailsAdmin.config do |config|
     create do
       field :name
       field :email
+      field :slack_user_id
       field :survey_subject
       field :group
       field :roles
@@ -58,6 +59,7 @@ RailsAdmin.config do |config|
 
     edit do
       field :name
+      field :slack_user_id
       field :survey_subject
       field :group
       field :roles

@@ -5,11 +5,13 @@ class User < ApplicationRecord
   has_many :survey_assignments, dependent: :restrict_with_error
 
   before_validation :normalize_email
+  before_validation :normalize_slack_user_id
   after_save :create_assignments_for_currently_active_surveys, if: :survey_subject?
   before_destroy :prevent_destroy
 
   validates :name, presence: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }
+  validates :slack_user_id, uniqueness: { allow_nil: true }
 
   def system_admin?
     roles.exists?(name: "system_admin")
@@ -23,6 +25,10 @@ class User < ApplicationRecord
 
   def normalize_email
     self.email = email.to_s.strip.downcase
+  end
+
+  def normalize_slack_user_id
+    self.slack_user_id = slack_user_id.to_s.strip.presence
   end
 
   def create_assignments_for_currently_active_surveys

@@ -13,6 +13,18 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "user@example.com", duplicate.email
   end
 
+  test "slack user id is normalized and unique when present" do
+    user = User.create!(name: "Slack利用者", email: "slack@example.com", slack_user_id: " U12345678 ")
+
+    duplicate = User.new(name: "重複", email: "duplicate@example.com", slack_user_id: "U12345678")
+    blank = User.new(name: "空欄", email: "blank@example.com", slack_user_id: " ")
+
+    assert_equal "U12345678", user.slack_user_id
+    assert_not duplicate.valid?
+    assert blank.valid?
+    assert_nil blank.slack_user_id
+  end
+
   test "system admin role check" do
     role = Role.create!(name: "system_admin")
     user = User.create!(name: "管理者", email: "admin@example.com")
