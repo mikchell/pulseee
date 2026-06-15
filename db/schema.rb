@@ -19,14 +19,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.string "group_name"
     t.string "submit_token", null: false
     t.datetime "updated_at", null: false
-    t.index ["submit_token"], name: "index_answer_group_snapshots_on_submit_token", unique: true
+    t.index [ "submit_token" ], name: "index_answer_group_snapshots_on_submit_token", unique: true
   end
 
   create_table "groups", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_groups_on_name", unique: true
+    t.index [ "name" ], name: "index_groups_on_name", unique: true
   end
 
   create_table "questions", force: :cascade do |t|
@@ -39,15 +39,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_roles_on_name", unique: true
+    t.index [ "name" ], name: "index_roles_on_name", unique: true
   end
 
   create_table "score_answers", force: :cascade do |t|
     t.integer "score", null: false
     t.string "submit_token", null: false
     t.bigint "survey_question_id", null: false
-    t.index ["submit_token", "survey_question_id"], name: "index_score_answers_on_submit_token_and_survey_question_id", unique: true
-    t.index ["survey_question_id"], name: "index_score_answers_on_survey_question_id"
+    t.index [ "submit_token", "survey_question_id" ], name: "index_score_answers_on_submit_token_and_survey_question_id", unique: true
+    t.index [ "survey_question_id" ], name: "index_score_answers_on_survey_question_id"
     t.check_constraint "score >= 1 AND score <= 5", name: "chk_score_answers_score"
   end
 
@@ -58,24 +58,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.bigint "job_id", null: false
     t.integer "priority", default: 0, null: false
     t.string "queue_name", null: false
-    t.index ["concurrency_key", "priority", "job_id"], name: "index_solid_queue_blocked_executions_for_release"
-    t.index ["expires_at", "concurrency_key"], name: "index_solid_queue_blocked_executions_for_maintenance"
-    t.index ["job_id"], name: "index_solid_queue_blocked_executions_on_job_id", unique: true
+    t.index [ "concurrency_key", "priority", "job_id" ], name: "index_solid_queue_blocked_executions_for_release"
+    t.index [ "expires_at", "concurrency_key" ], name: "index_solid_queue_blocked_executions_for_maintenance"
+    t.index [ "job_id" ], name: "index_solid_queue_blocked_executions_on_job_id", unique: true
   end
 
   create_table "solid_queue_claimed_executions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "job_id", null: false
     t.bigint "process_id"
-    t.index ["job_id"], name: "index_solid_queue_claimed_executions_on_job_id", unique: true
-    t.index ["process_id", "job_id"], name: "index_solid_queue_claimed_executions_on_process_id_and_job_id"
+    t.index [ "job_id" ], name: "index_solid_queue_claimed_executions_on_job_id", unique: true
+    t.index [ "process_id", "job_id" ], name: "index_solid_queue_claimed_executions_on_process_id_and_job_id"
   end
 
   create_table "solid_queue_failed_executions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "error"
     t.bigint "job_id", null: false
-    t.index ["job_id"], name: "index_solid_queue_failed_executions_on_job_id", unique: true
+    t.index [ "job_id" ], name: "index_solid_queue_failed_executions_on_job_id", unique: true
   end
 
   create_table "solid_queue_jobs", force: :cascade do |t|
@@ -89,17 +89,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.string "queue_name", null: false
     t.datetime "scheduled_at"
     t.datetime "updated_at", null: false
-    t.index ["active_job_id"], name: "index_solid_queue_jobs_on_active_job_id"
-    t.index ["class_name"], name: "index_solid_queue_jobs_on_class_name"
-    t.index ["finished_at"], name: "index_solid_queue_jobs_on_finished_at"
-    t.index ["queue_name", "finished_at"], name: "index_solid_queue_jobs_for_filtering"
-    t.index ["scheduled_at", "finished_at"], name: "index_solid_queue_jobs_for_alerting"
+    t.index [ "active_job_id" ], name: "index_solid_queue_jobs_on_active_job_id"
+    t.index [ "class_name" ], name: "index_solid_queue_jobs_on_class_name"
+    t.index [ "finished_at" ], name: "index_solid_queue_jobs_on_finished_at"
+    t.index [ "queue_name", "finished_at" ], name: "index_solid_queue_jobs_for_filtering"
+    t.index [ "scheduled_at", "finished_at" ], name: "index_solid_queue_jobs_for_alerting"
   end
 
   create_table "solid_queue_pauses", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "queue_name", null: false
-    t.index ["queue_name"], name: "index_solid_queue_pauses_on_queue_name", unique: true
+    t.index [ "queue_name" ], name: "index_solid_queue_pauses_on_queue_name", unique: true
   end
 
   create_table "solid_queue_processes", force: :cascade do |t|
@@ -111,9 +111,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.string "name", null: false
     t.integer "pid", null: false
     t.bigint "supervisor_id"
-    t.index ["last_heartbeat_at"], name: "index_solid_queue_processes_on_last_heartbeat_at"
-    t.index ["name", "supervisor_id"], name: "index_solid_queue_processes_on_name_and_supervisor_id", unique: true
-    t.index ["supervisor_id"], name: "index_solid_queue_processes_on_supervisor_id"
+    t.index [ "last_heartbeat_at" ], name: "index_solid_queue_processes_on_last_heartbeat_at"
+    t.index [ "name", "supervisor_id" ], name: "index_solid_queue_processes_on_name_and_supervisor_id", unique: true
+    t.index [ "supervisor_id" ], name: "index_solid_queue_processes_on_supervisor_id"
   end
 
   create_table "solid_queue_ready_executions", force: :cascade do |t|
@@ -121,9 +121,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.bigint "job_id", null: false
     t.integer "priority", default: 0, null: false
     t.string "queue_name", null: false
-    t.index ["job_id"], name: "index_solid_queue_ready_executions_on_job_id", unique: true
-    t.index ["priority", "job_id"], name: "index_solid_queue_poll_all"
-    t.index ["queue_name", "priority", "job_id"], name: "index_solid_queue_poll_by_queue"
+    t.index [ "job_id" ], name: "index_solid_queue_ready_executions_on_job_id", unique: true
+    t.index [ "priority", "job_id" ], name: "index_solid_queue_poll_all"
+    t.index [ "queue_name", "priority", "job_id" ], name: "index_solid_queue_poll_by_queue"
   end
 
   create_table "solid_queue_recurring_executions", force: :cascade do |t|
@@ -131,8 +131,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.bigint "job_id", null: false
     t.datetime "run_at", null: false
     t.string "task_key", null: false
-    t.index ["job_id"], name: "index_solid_queue_recurring_executions_on_job_id", unique: true
-    t.index ["task_key", "run_at"], name: "index_solid_queue_recurring_executions_on_task_key_and_run_at", unique: true
+    t.index [ "job_id" ], name: "index_solid_queue_recurring_executions_on_job_id", unique: true
+    t.index [ "task_key", "run_at" ], name: "index_solid_queue_recurring_executions_on_task_key_and_run_at", unique: true
   end
 
   create_table "solid_queue_recurring_tasks", force: :cascade do |t|
@@ -147,8 +147,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.string "schedule", null: false
     t.boolean "static", default: true, null: false
     t.datetime "updated_at", null: false
-    t.index ["key"], name: "index_solid_queue_recurring_tasks_on_key", unique: true
-    t.index ["static"], name: "index_solid_queue_recurring_tasks_on_static"
+    t.index [ "key" ], name: "index_solid_queue_recurring_tasks_on_key", unique: true
+    t.index [ "static" ], name: "index_solid_queue_recurring_tasks_on_static"
   end
 
   create_table "solid_queue_scheduled_executions", force: :cascade do |t|
@@ -157,8 +157,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.integer "priority", default: 0, null: false
     t.string "queue_name", null: false
     t.datetime "scheduled_at", null: false
-    t.index ["job_id"], name: "index_solid_queue_scheduled_executions_on_job_id", unique: true
-    t.index ["scheduled_at", "priority", "job_id"], name: "index_solid_queue_dispatch_all"
+    t.index [ "job_id" ], name: "index_solid_queue_scheduled_executions_on_job_id", unique: true
+    t.index [ "scheduled_at", "priority", "job_id" ], name: "index_solid_queue_dispatch_all"
   end
 
   create_table "solid_queue_semaphores", force: :cascade do |t|
@@ -167,9 +167,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.string "key", null: false
     t.datetime "updated_at", null: false
     t.integer "value", default: 1, null: false
-    t.index ["expires_at"], name: "index_solid_queue_semaphores_on_expires_at"
-    t.index ["key", "value"], name: "index_solid_queue_semaphores_on_key_and_value"
-    t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
+    t.index [ "expires_at" ], name: "index_solid_queue_semaphores_on_expires_at"
+    t.index [ "key", "value" ], name: "index_solid_queue_semaphores_on_key_and_value"
+    t.index [ "key" ], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
   create_table "survey_assignments", force: :cascade do |t|
@@ -179,10 +179,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.bigint "survey_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["state"], name: "index_survey_assignments_on_state"
-    t.index ["survey_id", "user_id"], name: "index_survey_assignments_on_survey_id_and_user_id", unique: true
-    t.index ["survey_id"], name: "index_survey_assignments_on_survey_id"
-    t.index ["user_id"], name: "index_survey_assignments_on_user_id"
+    t.index [ "state" ], name: "index_survey_assignments_on_state"
+    t.index [ "survey_id", "user_id" ], name: "index_survey_assignments_on_survey_id_and_user_id", unique: true
+    t.index [ "survey_id" ], name: "index_survey_assignments_on_survey_id"
+    t.index [ "user_id" ], name: "index_survey_assignments_on_user_id"
     t.check_constraint "state::text = ANY (ARRAY['pending'::character varying, 'submitted'::character varying]::text[])", name: "chk_survey_assignments_state"
   end
 
@@ -193,10 +193,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.bigint "question_id", null: false
     t.bigint "survey_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["question_id"], name: "index_survey_questions_on_question_id"
-    t.index ["survey_id", "order_index"], name: "index_survey_questions_on_survey_id_and_order_index", unique: true
-    t.index ["survey_id", "question_id"], name: "index_survey_questions_on_survey_id_and_question_id", unique: true
-    t.index ["survey_id"], name: "index_survey_questions_on_survey_id"
+    t.index [ "question_id" ], name: "index_survey_questions_on_question_id"
+    t.index [ "survey_id", "order_index" ], name: "index_survey_questions_on_survey_id_and_order_index", unique: true
+    t.index [ "survey_id", "question_id" ], name: "index_survey_questions_on_survey_id_and_question_id", unique: true
+    t.index [ "survey_id" ], name: "index_survey_questions_on_survey_id"
   end
 
   create_table "surveys", force: :cascade do |t|
@@ -206,7 +206,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.string "status", default: "draft", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
-    t.index ["status"], name: "index_surveys_on_status"
+    t.index [ "status" ], name: "index_surveys_on_status"
     t.check_constraint "end_at > start_at", name: "chk_surveys_period"
     t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'active'::character varying]::text[])", name: "chk_surveys_status"
   end
@@ -216,9 +216,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.bigint "role_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["role_id"], name: "index_user_roles_on_role_id"
-    t.index ["user_id", "role_id"], name: "index_user_roles_on_user_id_and_role_id", unique: true
-    t.index ["user_id"], name: "index_user_roles_on_user_id"
+    t.index [ "role_id" ], name: "index_user_roles_on_role_id"
+    t.index [ "user_id", "role_id" ], name: "index_user_roles_on_user_id_and_role_id", unique: true
+    t.index [ "user_id" ], name: "index_user_roles_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -229,9 +229,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_13_000002) do
     t.string "slack_user_id"
     t.boolean "survey_subject", default: false, null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["group_id"], name: "index_users_on_group_id"
-    t.index ["slack_user_id"], name: "index_users_on_slack_user_id", unique: true, where: "(slack_user_id IS NOT NULL)"
+    t.index [ "email" ], name: "index_users_on_email", unique: true
+    t.index [ "group_id" ], name: "index_users_on_group_id"
+    t.index [ "slack_user_id" ], name: "index_users_on_slack_user_id", unique: true, where: "(slack_user_id IS NOT NULL)"
   end
 
   add_foreign_key "score_answers", "survey_questions"

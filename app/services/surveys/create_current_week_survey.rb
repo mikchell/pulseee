@@ -1,17 +1,25 @@
 module Surveys
   class CreateCurrentWeekSurvey
+    class NotCreationDayError < StandardError; end
+
     def self.call(now: Time.current)
       new(now: now).call
     end
 
     def self.current_period(now: Time.current)
-      start_at = now.in_time_zone.to_date.next_occurring(:thursday).in_time_zone
+      date = now.in_time_zone.to_date
+      return nil unless date.thursday?
+
+      start_at = date.in_time_zone
 
       [ start_at, start_at + 2.days ]
     end
 
     def self.current_survey(now: Time.current)
-      start_at, end_at = current_period(now: now)
+      period = current_period(now: now)
+      return nil unless period
+
+      start_at, end_at = period
 
       Survey.find_by(start_at: start_at, end_at: end_at)
     end
@@ -21,7 +29,10 @@ module Surveys
     end
 
     def call
-      start_at, end_at = self.class.current_period(now: now)
+      period = self.class.current_period(now: now)
+      raise NotCreationDayError, "サーベイを作成できるのは木曜日のみです" unless period
+
+      start_at, end_at = period
       survey = Survey.find_or_initialize_by(start_at: start_at, end_at: end_at)
 
       survey.title = default_title(start_at) if survey.new_record?

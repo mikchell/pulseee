@@ -19,7 +19,7 @@ class AdminSurveyOperationsTest < ActionDispatch::IntegrationTest
     admin = create_admin
     User.create!(name: "対象者", email: "subject@example.com", survey_subject: true)
 
-    travel_to Time.zone.local(2026, 6, 10, 12, 0) do
+    travel_to Time.zone.local(2026, 6, 11, 12, 0) do
       Survey.create!(title: "現在のサーベイ", status: :active, start_at: 1.hour.ago, end_at: 1.hour.from_now)
       Surveys::CreateCurrentWeekSurvey.call
       login_as(admin)
@@ -58,7 +58,7 @@ class AdminSurveyOperationsTest < ActionDispatch::IntegrationTest
     admin = create_admin
     login_as(admin)
 
-    travel_to Time.zone.local(2026, 6, 10, 12, 0) do
+    travel_to Time.zone.local(2026, 6, 11, 12, 0) do
       assert_difference("Survey.count", 1) do
         assert_no_enqueued_jobs do
           post create_current_week_survey_admin_survey_operation_path
@@ -71,11 +71,28 @@ class AdminSurveyOperationsTest < ActionDispatch::IntegrationTest
     assert_select ".flash.notice", text: "今週分サーベイを作成しました"
   end
 
-  test "admin sees already created notice when current week survey exists" do
+  test "admin cannot create current week survey outside Thursday" do
     admin = create_admin
     login_as(admin)
 
     travel_to Time.zone.local(2026, 6, 10, 12, 0) do
+      assert_no_difference("Survey.count") do
+        assert_no_enqueued_jobs do
+          post create_current_week_survey_admin_survey_operation_path
+        end
+      end
+    end
+
+    assert_redirected_to admin_survey_operation_path
+    follow_redirect!
+    assert_select ".flash.alert", text: "サーベイを作成できるのは木曜日のみです"
+  end
+
+  test "admin sees already created notice when current week survey exists" do
+    admin = create_admin
+    login_as(admin)
+
+    travel_to Time.zone.local(2026, 6, 11, 12, 0) do
       Surveys::CreateCurrentWeekSurvey.call
 
       assert_no_difference("Survey.count") do

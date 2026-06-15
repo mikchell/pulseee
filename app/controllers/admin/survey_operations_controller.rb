@@ -16,6 +16,8 @@ class Admin::SurveyOperationsController < ApplicationController
 
     notice = already_created ? "今週分サーベイはすでに作成済みです" : "今週分サーベイを作成しました"
     redirect_to admin_survey_operation_path, notice: notice
+  rescue Surveys::CreateCurrentWeekSurvey::NotCreationDayError => error
+    redirect_to admin_survey_operation_path, alert: error.message
   end
 
   def notify_unanswered_users
