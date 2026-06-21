@@ -6,6 +6,7 @@ class SurveyUnansweredNotificationJob < ApplicationJob
     return unless survey
 
     users = Surveys::UnansweredUsersQuery.call(survey: survey)
+    return if users.empty?
 
     Slack::SurveyUnansweredNotifier.call(survey: survey, users: users)
   end

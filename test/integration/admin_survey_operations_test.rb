@@ -109,6 +109,7 @@ class AdminSurveyOperationsTest < ActionDispatch::IntegrationTest
 
   test "admin can send unanswered notification when slack is configured" do
     admin = create_admin
+    User.create!(name: "未回答", email: "pending@example.com", survey_subject: true)
     survey = Survey.create!(title: "今週", status: :active, start_at: 1.hour.ago, end_at: 1.hour.from_now)
     login_as(admin)
     notified_survey_id = nil

@@ -27,9 +27,13 @@ class Slack::SurveyUnansweredNotifierTest < ActiveSupport::TestCase
     assert_equal "application/json", headers.fetch("Content-Type")
     assert_equal "サーベイ未回答者: 2名", payload.fetch("text")
     assert_equal <<~TEXT.chomp, payload.dig("blocks", 0, "text", "text")
-      <@U12345678> <@U23456789>
-      今週のサーベイへの回答がまだ完了していません。
-      回答をお願いします。
+      以下の方は今週のサーベイ回答が完了していません。
+      本日 24:00 までに回答をしてください。
+
+      - <@U12345678>
+      - <@U23456789>
+
+      ※ この通知を認識したら、リアクションをお願いします。
     TEXT
   end
 

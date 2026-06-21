@@ -65,9 +65,12 @@ module Slack
       return "未回答者はいません。" if users.empty?
 
       [
-        users.map { |user| "<@#{user.slack_user_id}>" }.join(" "),
-        "今週のサーベイへの回答がまだ完了していません。",
-        "回答をお願いします。"
+        "以下の方は今週のサーベイ回答が完了していません。",
+        "本日 24:00 までに回答をしてください。",
+        "",
+        users.map { |user| "- <@#{user.slack_user_id}>" }.join("\n"),
+        "",
+        "※ この通知を認識したら、リアクションをお願いします。"
       ].join("\n")
     end
   end
