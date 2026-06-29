@@ -67,11 +67,16 @@ module Slack
       [
         "以下の方は今週のサーベイ回答が完了していません。",
         "本日 24:00 までに回答をしてください。",
+        service_url,
         "",
         users.map { |user| "- <@#{user.slack_user_id}>" }.join("\n"),
         "",
         "※ この通知を認識したら、リアクションをお願いします。"
       ].join("\n")
+    end
+
+    def service_url
+      Rails.application.config.app_settings.fetch(:service_url)
     end
   end
 end

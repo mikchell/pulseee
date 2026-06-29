@@ -7,6 +7,10 @@ class ApplicationConfigurationTest < ActiveSupport::TestCase
     assert_equal "Tokyo", Time.zone.name
   end
 
+  test "loads service url from app settings" do
+    assert_equal "http://localhost:3000", Rails.application.config.app_settings.fetch(:service_url)
+  end
+
   test "schedules unanswered survey notification every Thursday at 18:00" do
     recurring_config = YAML.load_file(Rails.root.join("config/recurring.yml"))
     schedule = recurring_config.dig("production", "survey_unanswered_notification")

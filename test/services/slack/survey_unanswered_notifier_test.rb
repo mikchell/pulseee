@@ -29,6 +29,7 @@ class Slack::SurveyUnansweredNotifierTest < ActiveSupport::TestCase
     assert_equal <<~TEXT.chomp, payload.dig("blocks", 0, "text", "text")
       以下の方は今週のサーベイ回答が完了していません。
       本日 24:00 までに回答をしてください。
+      #{Rails.application.config.app_settings.fetch(:service_url)}
 
       - <@U12345678>
       - <@U23456789>
