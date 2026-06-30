@@ -13,6 +13,10 @@
 ③アンケート画面（一部のみ表示）
 <img width="1580" height="317" alt="image" src="https://github.com/user-attachments/assets/86f56f08-5f66-4613-b235-7135c9996e32" />
 
+④分析ダッシュボード画面（一部のみ表示）
+<img width="1269" height="740" alt="image" src="https://github.com/user-attachments/assets/919f0b09-12a3-4ef9-99ef-5df185c469d2" />
+
+
 ## Google認証の設定
 
 Googleログインを使うには、アプリ起動前に OAuth Client ID / Secret を設定してください。
