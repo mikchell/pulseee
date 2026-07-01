@@ -36,6 +36,19 @@ class UserTest < ActiveSupport::TestCase
     assert user.system_admin?
   end
 
+  test "manager can view scores" do
+    role = Role.create!(name: "manager")
+    user = User.create!(name: "マネージャー", email: "manager@example.com")
+
+    assert_not user.manager?
+    assert_not user.score_viewer?
+
+    user.roles << role
+
+    assert user.manager?
+    assert user.score_viewer?
+  end
+
   test "survey subject receives assignments for currently active surveys" do
     user = User.create!(name: "対象者", email: "subject@example.com", survey_subject: false)
     active = Survey.create!(title: "実施中", status: :active, start_at: 1.hour.ago, end_at: 1.hour.from_now)

@@ -17,6 +17,14 @@ class User < ApplicationRecord
     roles.exists?(name: "system_admin")
   end
 
+  def manager?
+    roles.exists?(name: "manager")
+  end
+
+  def score_viewer?
+    system_admin? || manager?
+  end
+
   def next_pending_survey_assignment
     survey_assignments.answerable.first
   end

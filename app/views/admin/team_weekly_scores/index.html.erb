@@ -1,0 +1,179 @@
+<main class="admin-operation-shell team-score-shell">
+  <nav class="home-nav team-score-nav" aria-label="スコア画面操作">
+    <%= link_to "ホーム", root_path, class: "home-nav-btn" %>
+    <% if current_user.system_admin? %>
+      <%= link_to "管理画面", rails_admin_path, class: "home-nav-btn" %>
+    <% end %>
+    <%= button_to "ログアウト", logout_path, method: :delete, class: "home-nav-btn" %>
+  </nav>
+
+  <% flash.each do |type, message| %>
+    <div class="flash <%= type %> home-flash" data-controller="flash"><%= message %></div>
+  <% end %>
+
+  <section class="admin-operation-panel team-score-panel" aria-labelledby="team-score-heading">
+    <div class="team-score-heading-block">
+      <p class="team-score-kicker">Weekly Score</p>
+      <h1 id="team-score-heading">チーム別スコア推移</h1>
+      <p>週次集計されたチーム別の全体平均と質問ごとの平均を確認できます。</p>
+    </div>
+
+    <% if @weeks.any? %>
+      <div class="team-score-summary" aria-label="集計サマリー">
+        <div>
+          <span class="team-score-summary-key">最新全体平均</span>
+          <span class="team-score-summary-value"><%= number_with_precision(@overall_latest_average, precision: 2) %></span>
+        </div>
+        <div>
+          <span class="team-score-summary-key">前週比</span>
+          <span class="team-score-summary-value team-score-delta <%= score_delta_class(@overall_delta) %>"><%= score_delta_text(@overall_delta) %></span>
+        </div>
+        <div>
+          <span class="team-score-summary-key">最新週の回答数</span>
+          <span class="team-score-summary-value"><%= @latest_response_count %></span>
+        </div>
+        <div>
+          <span class="team-score-summary-key">チーム数</span>
+          <span class="team-score-summary-value"><%= @group_names.size %></span>
+        </div>
+      </div>
+
+      <section class="team-score-chart-panel" aria-labelledby="team-score-overall-chart-heading">
+        <div class="team-score-chart-copy">
+          <p class="team-score-kicker">Overall Trend</p>
+          <h2 id="team-score-overall-chart-heading">全チーム平均の推移</h2>
+          <p>スコア1〜5の縦軸で、週ごとの全体傾向を表示しています。</p>
+        </div>
+        <div class="team-score-line-chart" role="img" aria-label="全チーム平均の折れ線グラフ">
+          <svg viewBox="0 0 800 300" aria-hidden="true">
+            <%# Y軸グリッド・ラベル（1〜5） %>
+            <% overall_chart_y_axis.each do |item| %>
+              <line x1="52" y1="<%= item[:y] %>" x2="784" y2="<%= item[:y] %>"
+                    class="<%= item[:score] == 1 ? 'team-score-chart-axis' : 'team-score-chart-grid' %>" />
+              <text x="44" y="<%= item[:y] + 4 %>" class="team-score-chart-label-y"><%= item[:score] %></text>
+            <% end %>
+            <%# Y軸縦線 %>
+            <line x1="52" y1="18" x2="52" y2="252" class="team-score-chart-axis" />
+            <%# データ折れ線と点 %>
+            <% overall_pts = overall_chart_points(@overall_points) %>
+            <polyline points="<%= overall_pts.map { |p| "#{p[:x]},#{p[:y]}" }.join(' ') %>" class="team-score-chart-line" />
+            <% overall_pts.each do |point| %>
+              <circle cx="<%= point[:x] %>" cy="<%= point[:y] %>" r="5" class="team-score-chart-dot" />
+            <% end %>
+            <%# X軸ラベル（多い場合は自動間引き） %>
+            <% overall_chart_x_labels(@overall_points).each do |item| %>
+              <text x="<%= item[:x] %>" y="278" class="team-score-chart-label-x"><%= item[:label] %></text>
+            <% end %>
+          </svg>
+        </div>
+      </section>
+
+      <div class="team-score-card-grid">
+        <% @team_cards.each_with_index do |card, index| %>
+          <% latest = card.fetch(:latest) %>
+          <section class="team-score-card" aria-labelledby="team-score-card-<%= index %>">
+            <div class="team-score-card-header">
+              <div>
+                <h2 id="team-score-card-<%= index %>"><%= card.fetch(:group_name) %></h2>
+                <span><%= score_date_label(latest.week_start_on) %> 週</span>
+              </div>
+              <div class="team-score-card-metric">
+                <strong><%= number_with_precision(latest.overall_average, precision: 2) %></strong>
+                <span class="team-score-delta <%= score_delta_class(card.fetch(:delta)) %>"><%= score_delta_text(card.fetch(:delta)) %></span>
+              </div>
+            </div>
+
+            <div class="team-score-mini-chart" role="img" aria-label="<%= card.fetch(:group_name) %>の週次推移">
+              <svg viewBox="0 0 400 130" aria-hidden="true">
+                <%# Y軸グリッドとラベル（1・3・5） %>
+                <% mini_chart_y_axis.each do |item| %>
+                  <line x1="36" y1="<%= item[:y] %>" x2="388" y2="<%= item[:y] %>"
+                        class="<%= item[:score] == 1 ? 'team-score-chart-axis' : 'team-score-chart-grid' %>" />
+                  <text x="30" y="<%= item[:y] + 4 %>" class="team-score-chart-label-y team-score-mini-label"><%= item[:score] %></text>
+                <% end %>
+                <%# Y軸縦線 %>
+                <line x1="36" y1="12" x2="36" y2="118" class="team-score-chart-axis" />
+                <%# データ折れ線と点 %>
+                <% mini_pts = mini_chart_points(card.fetch(:points)) %>
+                <polyline points="<%= mini_pts.map { |p| "#{p[:x]},#{p[:y]}" }.join(' ') %>" class="team-score-chart-line" />
+                <% mini_pts.each do |point| %>
+                  <circle cx="<%= point[:x] %>" cy="<%= point[:y] %>" r="4" class="team-score-chart-dot" />
+                <% end %>
+              </svg>
+            </div>
+
+            <div class="team-score-question-bars">
+              <% @question_labels.each do |order_index, label| %>
+                <% question = card.fetch(:question_averages)[order_index] %>
+                <% value = question&.fetch("average") %>
+                <div class="team-score-question-row">
+                  <span><%= label %></span>
+                  <div class="team-score-question-track" aria-hidden="true">
+                    <div class="team-score-question-fill" style="width: <%= score_percent(value) %>%"></div>
+                  </div>
+                  <strong><%= value ? number_with_precision(value, precision: 2) : "-" %></strong>
+                </div>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+      </div>
+
+      <% @scores_by_group.each_with_index do |(group_name, scores), index| %>
+        <section class="team-score-group" aria-labelledby="team-score-group-<%= index %>">
+          <div class="team-score-group-header">
+            <h2 id="team-score-group-<%= index %>"><%= group_name %> 詳細</h2>
+            <span>累計 <%= scores.sum(&:response_count) %> 件の回答</span>
+          </div>
+          <div class="team-score-table-wrap">
+            <table class="team-score-table">
+              <thead>
+                <tr>
+                  <th>週</th>
+                  <th>全体平均</th>
+                  <th>回答数</th>
+                  <% @question_labels.each_value do |label| %>
+                    <th><%= label %></th>
+                  <% end %>
+                </tr>
+              </thead>
+              <tbody>
+                <% scores.sort_by(&:week_start_on).reverse_each do |score| %>
+                  <tr>
+                    <td><%= score_date_label(score.week_start_on) %></td>
+                    <td><strong><%= number_with_precision(score.overall_average, precision: 2) %></strong></td>
+                    <td><%= score.response_count %></td>
+                    <% @question_labels.each_key do |order_index| %>
+                      <% question = score.question_averages[order_index] %>
+                      <td><%= question ? number_with_precision(question.fetch("average"), precision: 2) : "-" %></td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      <% end %>
+
+      <section class="team-score-question-legend" aria-labelledby="team-score-question-legend-heading">
+        <div>
+          <p class="team-score-kicker">Questions</p>
+          <h2 id="team-score-question-legend-heading">設問対応表</h2>
+        </div>
+        <dl>
+          <% @question_descriptions.each_value do |question| %>
+            <div>
+              <dt><%= question.fetch(:label) %></dt>
+              <dd><%= question.fetch(:body) %></dd>
+            </div>
+          <% end %>
+        </dl>
+      </section>
+    <% else %>
+      <div class="team-score-empty">
+        <h2>集計データはまだありません</h2>
+        <p>Render Cronで週次集計が実行されると、ここにチーム別の推移が表示されます。</p>
+      </div>
+    <% end %>
+  </section>
+</main>

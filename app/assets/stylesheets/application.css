@@ -1384,3 +1384,377 @@ h3 {
     text-align: left;
   }
 }
+
+/* ── 週次チームスコア ── */
+
+.team-score-shell {
+  width: min(1480px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 64px;
+}
+
+.team-score-nav {
+  position: static;
+  top: auto;
+  right: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.team-score-panel {
+  display: grid;
+  gap: 40px;
+}
+
+.team-score-heading-block {
+  display: grid;
+  gap: 6px;
+}
+
+.team-score-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+.team-score-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+}
+
+.team-score-summary-key {
+  display: block;
+  font-size: 12px;
+  color: var(--steel);
+  margin-bottom: 4px;
+}
+
+.team-score-summary-value {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--charcoal);
+  line-height: 1.2;
+}
+
+.team-score-delta {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.team-score-delta.is-up   { color: #2d7a3a; }
+.team-score-delta.is-down { color: #c0392b; }
+.team-score-delta.is-flat { color: var(--steel); }
+
+.team-score-summary-value.team-score-delta {
+  font-size: 20px;
+}
+
+/* 全体推移グラフ */
+
+.team-score-chart-panel {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+  align-items: start;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+}
+
+.team-score-chart-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.team-score-line-chart {
+  display: grid;
+  gap: 8px;
+}
+
+.team-score-line-chart svg {
+  width: 100%;
+  overflow: visible;
+}
+
+.team-score-chart-label-x {
+  font-size: 11px;
+  fill: var(--steel);
+  text-anchor: middle;
+  font-family: inherit;
+}
+
+.team-score-chart-label-y {
+  font-size: 11px;
+  fill: var(--steel);
+  text-anchor: end;
+  font-family: inherit;
+}
+
+.team-score-mini-label {
+  font-size: 9px;
+}
+
+.team-score-chart-axis {
+  stroke: var(--hairline-strong);
+  stroke-width: 1;
+}
+
+.team-score-chart-grid {
+  stroke: var(--hairline);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.team-score-chart-line {
+  fill: none;
+  stroke: #c07070;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.team-score-chart-dot {
+  fill: #c07070;
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.team-score-chart-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--steel);
+  padding: 0 28px;
+}
+
+/* チーム別カード */
+
+.team-score-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.team-score-card {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+}
+
+.team-score-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.team-score-card-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.team-score-card-header span {
+  font-size: 12px;
+  color: var(--steel);
+}
+
+.team-score-card-metric {
+  text-align: right;
+  display: grid;
+  gap: 2px;
+}
+
+.team-score-card-metric strong {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--charcoal);
+}
+
+.team-score-mini-chart svg {
+  width: 100%;
+  height: 100px;
+  overflow: visible;
+}
+
+/* 質問別バー */
+
+.team-score-question-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.team-score-question-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.team-score-question-row > span {
+  color: var(--charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.team-score-question-track {
+  height: 8px;
+  background: var(--hairline);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.team-score-question-fill {
+  height: 100%;
+  background: #c07070;
+  border-radius: 4px;
+  transition: width 400ms ease;
+}
+
+.team-score-question-row strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+  text-align: right;
+  min-width: 32px;
+}
+
+/* 詳細テーブル */
+
+.team-score-group {
+  display: grid;
+  gap: 12px;
+}
+
+.team-score-group-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.team-score-group-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.team-score-group-header span {
+  font-size: 13px;
+  color: var(--steel);
+}
+
+.team-score-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}
+
+.team-score-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.team-score-table th,
+.team-score-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--hairline);
+  white-space: nowrap;
+}
+
+.team-score-table th {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--steel);
+  background: var(--surface);
+}
+
+.team-score-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.team-score-table tbody tr:hover td {
+  background: var(--hairline);
+}
+
+.team-score-question-legend {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}
+
+.team-score-question-legend h2 {
+  font-size: 22px;
+}
+
+.team-score-question-legend dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.team-score-question-legend dl > div {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.team-score-question-legend dt {
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.team-score-question-legend dd {
+  margin: 0;
+  color: var(--charcoal);
+  font-size: 14px;
+}
+
+/* 空状態 */
+
+.team-score-empty {
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--steel);
+}
+
+.team-score-empty h2 {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 900px) {
+  .team-score-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .team-score-chart-panel {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,6 +1,9 @@
 <% if current_user %>
   <main class="home-hero-shell">
     <nav class="home-nav" aria-label="ホーム操作">
+      <% if current_user.score_viewer? %>
+        <%= link_to "チームスコア", admin_team_weekly_scores_path, class: "home-nav-btn" %>
+      <% end %>
       <% if current_user.system_admin? %>
         <%= link_to "管理画面", rails_admin_path, class: "home-nav-btn" %>
       <% end %>

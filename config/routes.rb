@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   namespace :admin do
+    resources :team_weekly_scores, only: :index
+
     resource :survey_operation, only: :show do
       post :create_current_week_survey
       post :notify_unanswered_users
