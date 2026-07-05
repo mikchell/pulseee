@@ -66,8 +66,4 @@ class UserTest < ActiveSupport::TestCase
   end
 
   private
-
-  def create_standard_questions
-    Question::STANDARD_BODIES.each { |body| Question.find_or_create_by!(body: body) }
-  end
 end

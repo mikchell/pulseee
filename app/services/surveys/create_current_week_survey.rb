@@ -12,7 +12,7 @@ module Surveys
 
       start_at = date.in_time_zone
 
-      [ start_at, start_at + 2.days ]
+      [ start_at, start_at + 3.days ]
     end
 
     def self.current_survey(now: Time.current)

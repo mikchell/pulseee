@@ -1460,6 +1460,47 @@ h3 {
   font-size: 20px;
 }
 
+.team-response-rate-panel {
+  display: grid;
+  gap: 20px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+}
+
+.team-response-rate-table td:nth-child(4) {
+  min-width: 320px;
+}
+
+.team-response-rate-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.team-response-rate-groups span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--canvas);
+  color: var(--charcoal);
+  font-size: 12px;
+}
+
+.team-response-rate-groups strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.team-response-rate-groups small {
+  color: var(--steel);
+  font-size: 11px;
+}
+
 /* 全体推移グラフ */
 
 .team-score-chart-panel {

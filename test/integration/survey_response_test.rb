@@ -3,7 +3,7 @@ require "test_helper"
 class SurveyResponseTest < ActionDispatch::IntegrationTest
   setup do
     OmniAuth.config.test_mode = true
-    Question::STANDARD_BODIES.each { |body| Question.create!(body: body) }
+    create_standard_questions
   end
 
   teardown do

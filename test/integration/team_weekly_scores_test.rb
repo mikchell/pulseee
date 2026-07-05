@@ -32,6 +32,26 @@ class TeamWeeklyScoresTest < ActionDispatch::IntegrationTest
     assert_select ".team-score-group-header span", text: "累計 1 件の回答"
     assert_select "td strong", text: "4.20"
     assert_select "td strong", text: "3.40"
+    assert_select "#team-response-rate-heading", count: 0
+    assert_no_match "回答率", response.body
+  end
+
+  test "system admin can view weekly response rates" do
+    admin = create_user_with_role("system_admin")
+    survey = create_survey_for_response_rate(week_start_on: Date.new(2026, 6, 8))
+    submit_assignment(survey, "開発回答者")
+
+    login_as(admin)
+    travel_to Time.zone.local(2026, 6, 20) do
+      get admin_team_weekly_scores_path
+    end
+
+    assert_response :success
+    assert_select "#team-response-rate-heading", text: "週ごとの回答率"
+    assert_select ".team-response-rate-table td strong", text: "33.3%"
+    assert_select ".team-response-rate-table td", text: "1/3"
+    assert_select ".team-response-rate-groups span", text: /開発\s+50.0%\s+1\/2/
+    assert_select ".team-response-rate-groups span", text: /営業\s+0.0%\s+0\/1/
   end
 
   test "weekly score details are ordered newest first" do
@@ -96,6 +116,35 @@ class TeamWeeklyScoresTest < ActionDispatch::IntegrationTest
     travel_to end_date - 1.hour do
       answers = survey.survey_questions.ordered.zip(scores).to_h { |sq, score| [ sq.id, score ] }
       survey.survey_assignments.find_by!(user: user).submit_scores!(answers)
+    end
+  end
+
+  def create_survey_for_response_rate(week_start_on:)
+    development = Group.find_or_create_by!(name: "開発")
+    sales = Group.find_or_create_by!(name: "営業")
+
+    [
+      [ "開発回答者", "dev-submitted@example.com", development ],
+      [ "開発未回答", "dev-pending@example.com", development ],
+      [ "営業未回答", "sales-pending@example.com", sales ]
+    ].each do |name, email, group|
+      User.create!(name: name, email: email, survey_subject: true, group: group)
+    end
+
+    Survey.create!(
+      title: "回答率テスト #{week_start_on}",
+      status: :active,
+      start_at: week_start_on.in_time_zone,
+      end_at: (week_start_on + 4.days).in_time_zone
+    )
+  end
+
+  def submit_assignment(survey, user_name)
+    assignment = survey.survey_assignments.joins(:user).find_by!(users: { name: user_name })
+    answers = survey.survey_questions.ordered.index_with { 4 }.transform_keys(&:id)
+
+    travel_to survey.end_at - 1.hour do
+      assert assignment.submit_scores!(answers)
     end
   end
 

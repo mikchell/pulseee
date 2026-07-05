@@ -2,7 +2,7 @@ require "test_helper"
 
 class ScoreAnswerTest < ActiveSupport::TestCase
   setup do
-    Question::STANDARD_BODIES.each { |body| Question.create!(body: body) }
+    create_standard_questions
     survey = Survey.create!(title: "スコア", start_at: 1.hour.ago, end_at: 1.hour.from_now)
     @survey_question = survey.survey_questions.first
   end

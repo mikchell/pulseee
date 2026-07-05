@@ -64,7 +64,7 @@ class SurveyResultCsvExportTest < ActionDispatch::IntegrationTest
 
   test "csv includes group name snapshot at time of submission" do
     group = Group.create!(name: "開発")
-    Question::STANDARD_BODIES.each { |body| Question.create!(body: body) }
+    create_standard_questions
     user = User.create!(name: "開発者", email: "csv-dev@example.com", survey_subject: true, group: group)
     survey = Survey.create!(title: "グループテスト", status: :active, start_at: 1.hour.ago, end_at: 1.hour.from_now)
     assignment = survey.survey_assignments.find_by!(user: user)
@@ -97,7 +97,7 @@ class SurveyResultCsvExportTest < ActionDispatch::IntegrationTest
   private
 
   def create_answered_survey
-    Question::STANDARD_BODIES.each { |body| Question.create!(body: body) }
+    create_standard_questions
     users = 3.times.map do |index|
       User.create!(
         name: "対象者#{index + 1}",

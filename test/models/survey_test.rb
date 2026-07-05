@@ -74,10 +74,6 @@ class SurveyTest < ActiveSupport::TestCase
 
   private
 
-  def create_standard_questions
-    Question::STANDARD_BODIES.each { |body| Question.create!(body: body) }
-  end
-
   def answers_for(survey, score)
     survey.survey_questions.index_with { score }.transform_keys(&:id)
   end

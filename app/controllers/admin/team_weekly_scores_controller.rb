@@ -26,6 +26,7 @@ module Admin
       @overall_delta = delta(@overall_latest_average, @overall_previous_average)
       @latest_response_count = @latest_scores.sum(&:response_count)
       @team_cards = team_cards
+      @weekly_response_rates = current_user.system_admin? ? Surveys::WeeklyResponseRatesQuery.call : []
     end
 
     private

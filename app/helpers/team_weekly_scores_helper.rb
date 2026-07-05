@@ -102,6 +102,12 @@ module TeamWeeklyScoresHelper
     "#{date.month}/#{date.day}"
   end
 
+  def response_rate_text(rate)
+    return "-" unless rate
+
+    "#{number_with_precision(rate, precision: 1)}%"
+  end
+
   private
 
   def mini_x(index, count)

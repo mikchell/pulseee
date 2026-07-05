@@ -38,6 +38,49 @@
         </div>
       </div>
 
+      <% if current_user.system_admin? && @weekly_response_rates.any? %>
+        <section class="team-response-rate-panel" aria-labelledby="team-response-rate-heading">
+          <div class="team-score-chart-copy">
+            <p class="team-score-kicker">Response Rate</p>
+            <h2 id="team-response-rate-heading">週ごとの回答率</h2>
+            <p>サーベイ対象者への割当数に対する回答済み数を表示しています。</p>
+          </div>
+
+          <div class="team-score-table-wrap">
+            <table class="team-score-table team-response-rate-table">
+              <thead>
+                <tr>
+                  <th>週</th>
+                  <th>全体回答率</th>
+                  <th>回答済み</th>
+                  <th>チーム/部署別</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @weekly_response_rates.each do |week_rate| %>
+                  <tr>
+                    <td><%= score_date_label(week_rate.week_start_on) %></td>
+                    <td><strong><%= response_rate_text(week_rate.rate) %></strong></td>
+                    <td><%= week_rate.submitted_count %>/<%= week_rate.assigned_count %></td>
+                    <td>
+                      <div class="team-response-rate-groups">
+                        <% week_rate.group_rates.each do |group_rate| %>
+                          <span>
+                            <%= group_rate.group_name %>
+                            <strong><%= response_rate_text(group_rate.rate) %></strong>
+                            <small><%= group_rate.submitted_count %>/<%= group_rate.assigned_count %></small>
+                          </span>
+                        <% end %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      <% end %>
+
       <section class="team-score-chart-panel" aria-labelledby="team-score-overall-chart-heading">
         <div class="team-score-chart-copy">
           <p class="team-score-kicker">Overall Trend</p>

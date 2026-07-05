@@ -12,11 +12,11 @@ class Question < ApplicationRecord
   before_destroy :prevent_destroy
 
   validates :body, presence: true
+  validates :standard_order, presence: true, uniqueness: true,
+                             numericality: { only_integer: true, greater_than: 0 }
 
   def self.standard_ordered
-    by_body = where(body: STANDARD_BODIES).index_by(&:body)
-
-    STANDARD_BODIES.filter_map { |body| by_body[body] }
+    order(:standard_order)
   end
 
   def self.standard_questions_ready?
@@ -24,8 +24,10 @@ class Question < ApplicationRecord
   end
 
   def self.ensure_standard_questions!
-    STANDARD_BODIES.each do |body|
-      find_or_create_by!(body: body)
+    STANDARD_BODIES.each.with_index(1) do |body, standard_order|
+      question = find_or_initialize_by(standard_order: standard_order)
+      question.body = body if question.new_record?
+      question.save! if question.new_record? || question.changed?
     end
   end
 

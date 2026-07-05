@@ -335,6 +335,7 @@ set search_path to public;
 
 ## 参考
 
+- [運用失敗時の通知ルール](operation_failure_notification.md)
 - Neon Backup & restore: https://neon.com/docs/guides/backup-restore
 - Neon Instant restore: https://neon.com/docs/introduction/branch-restore
 - Neon Restore window: https://neon.com/docs/introduction/restore-window

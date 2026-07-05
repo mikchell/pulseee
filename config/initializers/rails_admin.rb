@@ -78,10 +78,12 @@ RailsAdmin.config do |config|
 
   config.model "Question" do
     create do
+      field :standard_order
       field :body
     end
 
     edit do
+      field :standard_order
       field :body
     end
   end

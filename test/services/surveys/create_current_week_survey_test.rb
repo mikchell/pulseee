@@ -12,7 +12,7 @@ class Surveys::CreateCurrentWeekSurveyTest < ActiveSupport::TestCase
       assert @survey.active?
       assert_equal "2026-06-11", @survey.title
       assert_equal Time.zone.local(2026, 6, 11, 0, 0), @survey.start_at
-      assert_equal Time.zone.local(2026, 6, 13, 0, 0), @survey.end_at
+      assert_equal Time.zone.local(2026, 6, 14, 0, 0), @survey.end_at
       assert_equal [ user.id ], @survey.survey_assignments.pluck(:user_id)
 
       assert_no_difference -> { Survey.count } do

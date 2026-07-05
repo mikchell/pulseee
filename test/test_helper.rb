@@ -11,5 +11,8 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    def create_standard_questions
+      Question.ensure_standard_questions!
+    end
   end
 end
