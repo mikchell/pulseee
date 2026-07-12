@@ -74,3 +74,12 @@ bin/rails server
 ```bash
 DEV_LOGIN_EMAIL="member@example.com" bin/rails server
 ```
+
+## テスト
+
+RSpec でテストを実行します。
+
+```bash
+bin/rails db:test:prepare
+bin/rspec
+```
