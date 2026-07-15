@@ -76,7 +76,7 @@ module Slack
     end
 
     def service_url
-      Rails.application.config.app_settings.fetch(:service_url)
+      SERVICE_URL
     end
   end
 end

@@ -7,8 +7,8 @@ RSpec.describe "ApplicationConfiguration" do
     assert_equal "Tokyo", Time.zone.name
   end
 
-  it "loads service url from app settings" do
-    assert_equal "http://localhost:3000", Rails.application.config.app_settings.fetch(:service_url)
+  it "loads service url from settings" do
+    assert_equal "http://localhost:3000", SERVICE_URL
   end
 
   it "schedules unanswered survey notification every Thursday at 18:00" do
